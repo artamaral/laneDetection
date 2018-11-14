@@ -27,9 +27,7 @@ class getROI():
         
         # Returning the image only where mask pixels match
         masked_image = cv2.bitwise_and(img, mask)
-        plt.imshow(masked_image)
-        plt.show()
-        
+                
         return masked_image
     
     

@@ -8,12 +8,13 @@ import matplotlib.image as mpimg
 import numpy as np
 import cv2
 from roi import getROI
-from drawLines import LaneLines
+from lineGroup import allLines
+
 
 class lanedetection():
    
     # reading in an image
-    image = mpimg.imread('1.jpg')
+    image = mpimg.imread('SolidWhiteCurve.jpg')
     #image = cv2.imread('solidWhiteCurve.jpg',1)
     
     height, width, channel = image.shape
@@ -35,9 +36,7 @@ class lanedetection():
     
     #gray_image = cv2.medianBlur(gray_image,3)
     gray_image = cv2.GaussianBlur(gray_image,(3,3),0)
-    plt.imshow(gray_image)
-    plt.show()
-    
+   
     '''
     to check the usage of mean value from image
     '''
@@ -47,28 +46,23 @@ class lanedetection():
     # apply automatic Canny edge detection using the computed median
     lower = int(max(0, (1.0 - sigma) * v))
     upper = int(min(255, (1.0 + sigma) * v))
-    
-    print(lower,upper)
-    
+
     
     # Call Canny Edge Detection here.
     cannyed_image = cv2.Canny(gray_image, lower, upper)
     #sobelx_image = cv2.Sobel(gray_image,cv2.CV_64F,1,0,ksize=5)
-    print(type(cannyed_image))
        
     #crop the cannyed img
     cropped_img = roi_img.region_of_interest(cannyed_image, region_of_interest_vertices)
     
-    plt.imshow(cropped_img)
-    plt.show()
     
     lines = cv2.HoughLinesP(cropped_img,rho=6,theta=np.pi/80, threshold=160, lines=np.array([]),
             minLineLength=18,maxLineGap=20)
     
-    drawLanes = LaneLines()
+ 
+    drawLanes = allLines()
     
-    image = drawLanes.draw_lines(image, lines, [255, 0, 0], 3)
-    
-    print(lines)
+    image = drawLanes.lineGroup(lines, image)
+
     plt.imshow(image)
     plt.show()
